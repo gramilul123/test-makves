@@ -25,7 +25,14 @@ func NewMakvesRepo(httpClient *http.Client, logger *logger.ZapLogger) *MakvesRep
 
 func (s MakvesRepo) Download(ctx context.Context, url string) ([]*models.User, error) {
 
-	resp, err := s.httpClient.Get(url)
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		s.logger.Error("error while create request", err)
+
+		return nil, errors_handler.ErrInternalService
+	}
+
+	resp, err := s.httpClient.Do(request)
 	if err != nil {
 		s.logger.Error("error while http connect", err, url)
 

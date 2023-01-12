@@ -21,7 +21,7 @@ func NewRedisRepo(client *redis.Client, logger *logger.ZapLogger) *RedisRepo {
 	return &RedisRepo{client: client, logger: logger}
 }
 
-func (s RedisRepo) Set(ctx context.Context, in map[string]models.User) error {
+func (s RedisRepo) Set(ctx context.Context, in map[string]*models.User) error {
 
 	err := s.client.MSet(ctx, in)
 

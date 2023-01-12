@@ -8,7 +8,7 @@ import (
 
 // Redis
 type Redis interface {
-	Set(ctx context.Context, in map[string]models.User) error
+	Set(ctx context.Context, in map[string]*models.User) error
 	Get(ctx context.Context, in []string) ([]*models.User, error)
 }
 
