@@ -4,17 +4,18 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/docker/docker/daemon/logger"
 	"github.com/go-redis/redis/v8"
+
 	"github.com/gramilul123/test-makves/config"
 	"github.com/gramilul123/test-makves/pkg/errors_handler"
+	"github.com/gramilul123/test-makves/pkg/logger"
 )
 
 type Redis struct {
 	Client *redis.Client
 }
 
-func NewClient(logger *logger.Logger, config *config.Redis) (*redis.Client, error) {
+func NewClient(logger *logger.ZapLogger, config *config.Redis) (*redis.Client, error) {
 
 	rds := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", config.Host, config.Port),
