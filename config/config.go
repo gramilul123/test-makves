@@ -33,6 +33,21 @@ const (
 
 	EnvRedisDbPassword = "REDIS_DB_PASSWORD"
 	DefRedisDbPassword = ""
+
+	EnvTimeout = "CONTEXT_TIMEOUT"
+	DefTimeout = "5000"
+
+	EnvMakvesUrl = "MAKVES_URL"
+	DefMakvesUrl = ""
+
+	EnvHost    = "HOST"
+	DefEnvHost = ""
+
+	EnvPath    = "APP_PATH"
+	DefEnvPath = ""
+
+	EnvPort    = "PORT"
+	DefEnvPort = "8080"
 )
 
 // Config is a main configuration struct for application
@@ -41,6 +56,9 @@ type Config struct {
 	Debug       bool
 	Log         *LogConfig
 	Redis       *Redis
+	App         *AppConfig
+	Timeout     int
+	MakvesUrl   string
 }
 
 // Redis -- параметры для Redis
@@ -53,6 +71,14 @@ type Redis struct {
 
 type LogConfig struct {
 	Level string // std: trace, debug, info, warning, error, fatal, panic
+}
+
+type AppConfig struct {
+	Host           string
+	Port           string
+	Path           string
+	MaxReceiveSize int
+	MaxSendSize    int
 }
 
 // конфигуратор един для всех! Инстанс, т.к. м.б. нужен в init() пакетов..
@@ -73,6 +99,13 @@ func New() *Config {
 				Password: ToString(LookupEnv(EnvRedisDbPassword, DefRedisDbPassword)),
 				DbNumber: ToInt(LookupEnv(EnvRedisDbNumber, DefRedisDbNumber)),
 			},
+			App: &AppConfig{
+				Host: ToString(LookupEnv(EnvHost, DefEnvHost)),
+				Port: ToString(LookupEnv(EnvPort, DefEnvPort)),
+				Path: ToString(LookupEnv(EnvPath, DefEnvPath)),
+			},
+			Timeout:   ToInt(LookupEnv(EnvTimeout, DefTimeout)),
+			MakvesUrl: ToString(LookupEnv(EnvMakvesUrl, DefMakvesUrl)),
 		}
 	}
 
