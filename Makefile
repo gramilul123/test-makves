@@ -4,16 +4,16 @@ DOCKER_COMPOSE_PATH?=deployments/docker-compose.yml
 #export PATH="$PATH:$(go env GOPATH)/bin"
 
 start:
-	docker-compose -f $(DOCKER_COMPOSE_PATH) build --no-cache
-	docker-compose -f $(DOCKER_COMPOSE_PATH) up -d
+	docker compose -f $(DOCKER_COMPOSE_PATH) build --no-cache
+	docker compose -f $(DOCKER_COMPOSE_PATH) up -d
 
 start-integration-test:
 	docker compose -f $(DOCKER_COMPOSE_PATH) build --no-cache
 	docker compose -f $(DOCKER_COMPOSE_PATH) up -d
 	docker compose -f $(DOCKER_COMPOSE_PATH) run integration_test /bin/sh -c "go test -cover ./..."; \
-	#test_status_code=$$?
-	#docker compose -f $(DOCKER_COMPOSE_PATH) down; \
-	#exit $$test_status_code
+	test_status_code=$$?
+	docker compose -f $(DOCKER_COMPOSE_PATH) down; \
+	exit $$test_status_code
 
 start-unit-test:
 	go test -v -cover -gcflags=-l --race `go list ./... | grep -v /integration_test`
