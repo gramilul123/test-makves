@@ -51,7 +51,7 @@ func Run(cfg *config.Config) {
 	).Setup()
 
 	// usecases
-	itemsUsecase := usecases.NewServiceUC(redisRepo, makvesRepo)
+	itemsUsecase := usecases.NewServiceUC(l, redisRepo, makvesRepo)
 
 	// controllers
 	itemsController := cv.NewItemsController(itemsUsecase, l, cfg)

@@ -2,6 +2,7 @@ package makves_repo
 
 import (
 	"context"
+	"encoding/csv"
 	"io"
 	"net/http"
 
@@ -54,6 +55,15 @@ func (s MakvesRepo) Download(ctx context.Context, url string) ([]*models.User, e
 	}
 
 	users := []*models.User{}
+
+	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
+		r := csv.NewReader(in)
+		r.LazyQuotes = true
+		r.FieldsPerRecord = -1
+		r.Comma = ','
+
+		return r
+	})
 
 	if err := gocsv.UnmarshalBytes(csvBytes, &users); err != nil {
 		s.logger.Error("error while parse body", err)

@@ -2,9 +2,12 @@ package usecases
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/gramilul123/test-makves/internal/models"
 	"github.com/gramilul123/test-makves/internal/repositories"
+	"github.com/gramilul123/test-makves/pkg/errors_handler"
+	"github.com/gramilul123/test-makves/pkg/logger"
 )
 
 type Service interface {
@@ -13,16 +16,19 @@ type Service interface {
 }
 
 type ServiceUC struct {
+	logger *logger.ZapLogger
 	redis  repositories.Redis
 	makves repositories.Makves
 }
 
 func NewServiceUC(
+	logger *logger.ZapLogger,
 	redis repositories.Redis,
 	makves repositories.Makves,
 ) *ServiceUC {
 
 	return &ServiceUC{
+		logger: logger,
 		redis:  redis,
 		makves: makves,
 	}
@@ -36,9 +42,15 @@ func (f *ServiceUC) Set(ctx context.Context, url string) error {
 		return err
 	}
 
-	usersMap := make(map[string]*models.User, len(usersList))
+	usersMap := make(map[string]string, len(usersList))
 	for _, user := range usersList {
-		usersMap[user.Id] = user
+		json, err := json.Marshal(user)
+		if err != nil {
+			f.logger.Error("error parse to json", err)
+
+			return errors_handler.ErrInternalService
+		}
+		usersMap[user.Id] = string(json)
 	}
 
 	return f.redis.Set(ctx, usersMap)

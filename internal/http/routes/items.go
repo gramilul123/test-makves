@@ -18,7 +18,7 @@ func (s ItemsRoutes) Setup() {
 	s.logger.Info("Setting up routes for helpers")
 	s.handler.Gin.
 		GET("/set", s.itemsController.Set).
-		GET("/get-items/:ids", s.itemsController.Set)
+		GET("/get-items/:ids", s.itemsController.Get)
 }
 
 func NewItemsRoutes(

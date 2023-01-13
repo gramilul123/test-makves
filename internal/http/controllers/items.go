@@ -52,7 +52,6 @@ func (u ItemsController) Get(c *gin.Context) {
 func (u ItemsController) Set(c *gin.Context) {
 
 	err := u.usecases.Set(c, u.config.MakvesUrl)
-
 	if err != nil {
 		u.logger.Error(err.Error(), "set items error")
 
