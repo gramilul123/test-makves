@@ -1,0 +1,8 @@
+FROM golang:1.19 as build-env
+
+RUN useradd -u 10001 gopher
+
+ENV NAME "test"
+WORKDIR /opt/${NAME}
+
+COPY . .

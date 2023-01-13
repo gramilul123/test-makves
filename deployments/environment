@@ -1,0 +1,13 @@
+ENVIRONMENT=dev
+DEBUG=true
+LOG_LEVEL=debug
+
+REDIS_DB_HOST=redis
+REDIS_DB_PORT=6379
+
+HOST=service
+PORT=8080
+CONTEXT_TIMEOUT=30000
+
+SERVICE=service:8080
+MAKVES_URL=http://dev.makves.ru/index.php/s/5iBmb6rK3yPCy5C/download/ueba.csv
