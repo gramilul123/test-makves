@@ -3,6 +3,7 @@ package redis_repo
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/go-redis/redis/v8"
@@ -36,11 +37,15 @@ func (s RedisRepo) Set(ctx context.Context, in map[string]string) error {
 }
 
 func (s RedisRepo) Get(ctx context.Context, in []string) ([]*models.User, error) {
-	userList := make([]*models.User, len(in))
+	userList := make([]*models.User, 0, len(in))
 
 	for _, key := range in {
 		res := s.client.Get(ctx, key)
 		if res.Err() != nil {
+			if errors.Is(res.Err(), redis.Nil) {
+				continue
+			}
+
 			s.logger.Error(fmt.Sprintf("error while geting users: %s", res.Err()))
 
 			return nil, errors_handler.ErrInternalService

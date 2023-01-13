@@ -59,7 +59,7 @@ func (f *ServiceUC) Set(ctx context.Context, url string) error {
 func (f *ServiceUC) Get(ctx context.Context, in []string) ([]*models.User, error) {
 
 	if len(in) == 0 {
-		return nil, nil
+		return []*models.User{}, nil
 	}
 
 	return f.redis.Get(ctx, in)
