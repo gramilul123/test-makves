@@ -36,29 +36,33 @@ func (s RedisRepo) Set(ctx context.Context, in map[string]string) error {
 }
 
 func (s RedisRepo) Get(ctx context.Context, in []string) ([]*models.User, error) {
-	users := []string{}
+	userList := make([]*models.User, len(in))
 
-	res := s.client.MGet(ctx, in...)
-	if res.Err() != nil {
-		s.logger.Error(fmt.Sprintf("error while geting users: %s", res.Err()))
+	for _, key := range in {
+		res := s.client.Get(ctx, key)
+		if res.Err() != nil {
+			s.logger.Error(fmt.Sprintf("error while geting users: %s", res.Err()))
 
-		return nil, errors_handler.ErrInternalService
-	}
+			return nil, errors_handler.ErrInternalService
+		}
 
-	if err := res.Scan(&users); err != nil {
-		s.logger.Error(fmt.Sprintf("error while scan result: %s", err))
+		var userString string
 
-		return nil, errors_handler.ErrInternalService
-	}
+		if err := res.Scan(&userString); err != nil {
+			s.logger.Error(fmt.Sprintf("error while scan result: %s", err))
 
-	userList := make([]*models.User, len(users))
-	for _, user := range users {
-		err := json.Unmarshal([]byte(user), &userList)
+			return nil, errors_handler.ErrInternalService
+		}
+
+		var user models.User
+		err := json.Unmarshal([]byte(userString), &user)
 		if err != nil {
 			s.logger.Error(fmt.Sprintf("error parse to struct: %s", err))
 
 			return nil, errors_handler.ErrInternalService
 		}
+
+		userList = append(userList, &user)
 	}
 
 	return userList, nil
