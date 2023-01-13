@@ -15,7 +15,7 @@ type ItemsRoutes struct {
 }
 
 func (s ItemsRoutes) Setup() {
-	s.logger.Info("Setting up routes for helpers")
+	s.logger.Info("Setting up routes for items")
 	s.handler.Gin.
 		GET("/set", s.itemsController.Set).
 		GET("/get-items/:ids", s.itemsController.Get)
